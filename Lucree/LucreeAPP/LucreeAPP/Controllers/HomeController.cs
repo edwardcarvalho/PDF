@@ -1,4 +1,5 @@
 ﻿using LucreeAPP;
+using LucreeAPP.Models;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Winnovative.WnvHtmlConvert;
 
 namespace Lucree.APP.Controllers
@@ -22,11 +24,16 @@ namespace Lucree.APP.Controllers
         public virtual ActionResult ShowPDF(string par1, string par2, string par3)
         {
 
-            string url = string.Format("{0}/{1}/Home/Contrato?par1={2}&par2={3}&par3={4}", Request.Url.Authority, Request.ApplicationPath, par1, par2, par3);
+            //string url = string.Format("{0}/{1}/Home/Contrato?par1={2}&par2={3}&par3={4}", Request.Url.Authority, Request.ApplicationPath, par1, par2, par3);
+
+            var urlAct = Url.Action("Contrato", "Home", new RouteValueDictionary(new { par1 = par1, par2 = par2, par3 = par3 }));
+            var url = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, urlAct);
+
             try
             {
 
-                var pdf = GetPdfContractFromHtml(url);
+                //var pdf = PdfGenerator.GetPdfContractFromHtml(url);
+                var pdf = PdfGenerator.Convert(new Uri(url), @"C:\Program Files (x86)\wkhtmltopdf\bin\wkhtmltopdf.exe");
 
                 if (pdf != null)
                 {
